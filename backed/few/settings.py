@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django.contrib.gis',
+    'leaflet',
     'tif',#this is app to view the tif file from backend 
 ]
 
