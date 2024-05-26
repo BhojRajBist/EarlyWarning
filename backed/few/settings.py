@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'leaflet',
     'tif',#this is app to view the tif file from backend 
+    'boundary', # This app is for storing the nepal boundary
 ]
 
 MIDDLEWARE = [
