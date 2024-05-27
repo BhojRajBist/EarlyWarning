@@ -15,16 +15,12 @@
 #     serializer_class = MunicipalitySerializer
 
 # spatial_data/views.py
-
-from rest_framework import generics
+# districts/api/views.py
+from rest_framework import viewsets
 from .models import District
 from .serializers import DistrictSerializer
 
-class DistrictList(generics.ListCreateAPIView):
-    queryset = District.objects.all()
-    serializer_class = DistrictSerializer
-
-class DistrictDetail(generics.RetrieveUpdateDestroyAPIView):
+class DistrictViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = District.objects.all()
     serializer_class = DistrictSerializer
 
