@@ -22,12 +22,11 @@
 # spatial_data/serializers.py
 
 # districts/api/serializers.py
-from rest_framework_gis.serializers import GeoFeatureModelSerializer
-from .models import District
+from rest_framework import serializers
+from .models import GeoJSONFile
 
-class DistrictSerializer(GeoFeatureModelSerializer):
+class GeoJSONFileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = District
-        geo_field = 'boundary'
-        fields = ('id', 'name', 'boundary')
+        model = GeoJSONFile
+        fields = '__all__'
 

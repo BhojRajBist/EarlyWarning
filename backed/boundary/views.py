@@ -17,10 +17,10 @@
 # spatial_data/views.py
 # districts/api/views.py
 from rest_framework import viewsets
-from .models import District
-from .serializers import DistrictSerializer
+from .models import GeoJSONFile
+from .serializers import GeoJSONFileSerializer
 
-class DistrictViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = District.objects.all()
-    serializer_class = DistrictSerializer
+class GeoJSONFileViewSet(viewsets.ModelViewSet):
+    queryset = GeoJSONFile.objects.all()
+    serializer_class = GeoJSONFileSerializer
 

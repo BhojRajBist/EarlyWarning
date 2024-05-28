@@ -12,11 +12,12 @@
 #     name = models.CharField(max_length=100)
 #     boundary = models.MultiPolygonField()
 
-from django.contrib.gis.db import models
+from django.db import models
 
-class District(models.Model):
-    name = models.CharField(max_length=100)
-    boundary = models.MultiPolygonField()
+class GeoJSONFile(models.Model):
+    name = models.CharField(max_length=255)
+    file = models.FileField(upload_to='geojson_files/')
 
     def __str__(self):
         return self.name
+
