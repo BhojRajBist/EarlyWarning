@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # 'tif',#this is app to view the tif file from backend 
     # 'boundary', # This app is for storing the nepal boundary
     'geojson_app',
+    'floodzones',
 ]
 
 MIDDLEWARE = [
@@ -68,10 +69,12 @@ CORS_ALLOWED_ORIGINS = [
 ]
 ROOT_URLCONF = 'few.urls'
 
+import os
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'floodzones', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -93,9 +96,9 @@ WSGI_APPLICATION = 'few.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'mydatabase',        # The name of your database
-        'USER': 'clear',              # The PostgreSQL user you created
-        'PASSWORD': 'yourpassword',   # The password you set for this user
+        'NAME': 'Raster',        # The name of your database
+        'USER': 'postgres',              # The PostgreSQL user you created
+        'PASSWORD': 'postgres',   # The password you set for this user
         'HOST': 'localhost',          # Typically 'localhost' if running locally
         'PORT': '5432',               # The default PostgreSQL port
     }

@@ -1,0 +1,65 @@
+<!-- map.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flood Zones Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css">
+    <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
+</head>
+<body>
+    <div id="map" style="height: 600px;"></div>
+
+    <script>
+        // Initialize MapLibre map
+        var map = new maplibregl.Map({
+            container: 'map',
+            style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+            center: [0, 0],  // Initial center of the map
+            zoom: 1  // Initial zoom level
+        });
+
+        // Fetch GeoTIFF analysis data
+        fetch('/analyze/{{ floodextent.id }}/')
+            .then(response => response.json())
+            .then(data => {
+                // Add GeoTIFF data as layers to the map
+                map.addLayer({
+                    'id': 'high-risk-zone',
+                    'type': 'raster',
+                    'source': {
+                        'type': 'image',
+                        'url': 'data:image/tiff;base64,' + btoa(String.fromCharCode.apply(null, data.high_risk_zone)),
+                        'coordinates': [[-180, 90], [180, -90]]
+                    },
+                    'paint': {}
+                });
+
+                map.addLayer({
+                    'id': 'medium-risk-zone',
+                    'type': 'raster',
+                    'source': {
+                        'type': 'image',
+                        'url': 'data:image/tiff;base64,' + btoa(String.fromCharCode.apply(null, data.medium_risk_zone)),
+                        'coordinates': [[-180, 90], [180, -90]]
+                    },
+                    'paint': {}
+                });
+
+                map.addLayer({
+                    'id': 'low-risk-zone',
+                    'type': 'raster',
+                    'source': {
+                        'type': 'image',
+                        'url': 'data:image/tiff;base64,' + btoa(String.fromCharCode.apply(null, data.low_risk_zone)),
+                        'coordinates': [[-180, 90], [180, -90]]
+                    },
+                    'paint': {}
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+</body>
+</html>
