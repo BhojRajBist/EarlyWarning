@@ -1,4 +1,4 @@
-<!-- map.html -->
+<!-- map.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,4 +62,448 @@
             });
     </script>
 </body>
+</html> -->
+
+                                        <!-- 
+                                        OUTPUT AA -->
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flood Zones Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css">
+    <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
+</head>
+<body>
+    <div id="map" style="height: 600px;"></div>
+
+    <script>
+        function base64ToUint8Array(base64) {
+            var binaryString = atob(base64);
+            var len = binaryString.length;
+            var bytes = new Uint8Array(len);
+            for (var i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes;
+        }
+
+        // Initialize MapLibre map
+        var map = new maplibregl.Map({
+            container: 'map',
+            style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+            center: [0, 0],  // Initial center of the map
+            zoom: 1  // Initial zoom level
+        });
+
+        // Fetch GeoTIFF analysis data
+        fetch(`/analyze/{{ floodextent_id }}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error:', data.error);
+                    return;
+                }
+
+                var highRiskBytes = base64ToUint8Array(data.high_risk_zone);
+                var mediumRiskBytes = base64ToUint8Array(data.medium_risk_zone);
+                var lowRiskBytes = base64ToUint8Array(data.low_risk_zone);
+
+                var highRiskImage = URL.createObjectURL(new Blob([highRiskBytes], { type: 'image/tiff' }));
+                var mediumRiskImage = URL.createObjectURL(new Blob([mediumRiskBytes], { type: 'image/tiff' }));
+                var lowRiskImage = URL.createObjectURL(new Blob([lowRiskBytes], { type: 'image/tiff' }));
+
+                map.on('load', function() {
+                    map.addLayer({
+                        'id': 'high-risk-zone',
+                        'type': 'raster',
+                        'source': {
+                            'type': 'image',
+                            'url': highRiskImage,
+                            'coordinates': [[-180, 90], [180, 90], [180, -90], [-180, -90]]
+                        },
+                        'paint': {}
+                    });
+
+                    map.addLayer({
+                        'id': 'medium-risk-zone',
+                        'type': 'raster',
+                        'source': {
+                            'type': 'image',
+                            'url': mediumRiskImage,
+                            'coordinates': [[-180, 90], [180, 90], [180, -90], [-180, -90]]
+                        },
+                        'paint': {}
+                    });
+
+                    map.addLayer({
+                        'id': 'low-risk-zone',
+                        'type': 'raster',
+                        'source': {
+                            'type': 'image',
+                            'url': lowRiskImage,
+                            'coordinates': [[-180, 90], [180, 90], [180, -90], [-180, -90]]
+                        },
+                        'paint': {}
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+</body>
+</html> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+working one -->
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flood Zones Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css">
+    <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
+</head>
+<body>
+    <div id="map" style="height: 600px;"></div>
+
+    <script>
+        function base64ToArrayBuffer(base64) {
+            var binaryString = atob(base64);
+            var len = binaryString.length;
+            var bytes = new Uint8Array(len);
+            for (var i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Initialize MapLibre map
+        var map = new maplibregl.Map({
+            container: 'map',
+            style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',  // Use a simple map style
+            center: [0, 0],  // Initial center of the map
+            zoom: 1  // Initial zoom level
+        });
+
+        // Fetch GeoTIFF analysis data
+        fetch(`/analyze/{{ floodextent_id }}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error:', data.error);
+                    return;
+                }
+
+                var width = data.width;
+                var height = data.height;
+
+                var highRiskBytes = base64ToArrayBuffer(data.high_risk_zone);
+                var mediumRiskBytes = base64ToArrayBuffer(data.medium_risk_zone);
+                var lowRiskBytes = base64ToArrayBuffer(data.low_risk_zone);
+
+                var highRiskImage = URL.createObjectURL(new Blob([highRiskBytes], { type: 'image/tiff' }));
+                var mediumRiskImage = URL.createObjectURL(new Blob([mediumRiskBytes], { type: 'image/tiff' }));
+                var lowRiskImage = URL.createObjectURL(new Blob([lowRiskBytes], { type: 'image/tiff' }));
+
+                map.on('load', function() {
+                    if (!highRiskImage || !mediumRiskImage || !lowRiskImage) {
+                        console.error('Error: Images not found');
+                        return;
+                    }
+
+                    map.addLayer({
+                        'id': 'high-risk-zone',
+                        'type': 'raster',
+                        'source': {
+                            'type': 'image',
+                            'url': highRiskImage,
+                            'coordinates': [[-180, 90], [180, 90], [180, -90], [-180, -90]]
+                        },
+                        'paint': {}
+                    });
+
+                    map.addLayer({
+                        'id': 'medium-risk-zone',
+                        'type': 'raster',
+                        'source': {
+                            'type': 'image',
+                            'url': mediumRiskImage,
+                            'coordinates': [[-180, 90], [180, 90], [180, -90], [-180, -90]]
+                        },
+                        'paint': {}
+                    });
+
+                    map.addLayer({
+                        'id': 'low-risk-zone',
+                        'type': 'raster',
+                        'source': {
+                            'type': 'image',
+                            'url': lowRiskImage,
+                            'coordinates': [[-180, 90], [180, 90], [180, -90], [-180, -90]]
+                        },
+                        'paint': {}
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    </script>
+</body>
+</html> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flood Zones Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css">
+    <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
+</head>
+<body>
+    <div id="map" style="height: 600px;"></div>
+
+    <script>
+        function base64ToArrayBuffer(base64) {
+            var binaryString = atob(base64);
+            var len = binaryString.length;
+            var bytes = new Uint8Array(len);
+            for (var i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Initialize MapLibre map with error handling
+        var map = new maplibregl.Map({
+            container: 'map',
+            style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',  // Updated style URL
+            center: [0, 0],  // Initial center of the map
+            zoom: 1  // Initial zoom level
+        });
+
+        map.on('error', function(e) {
+            console.error('MapLibre GL error:', e);
+        });
+
+        // Fetch GeoTIFF analysis data
+        fetch(`/analyze/{{ floodextent_id }}/`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    console.error('Error:', data.error);
+                    return;
+                }
+
+                var width = data.width;
+                var height = data.height;
+
+                var highRiskBytes = base64ToArrayBuffer(data.high_risk_zone);
+                var mediumRiskBytes = base64ToArrayBuffer(data.medium_risk_zone);
+                var lowRiskBytes = base64ToArrayBuffer(data.low_risk_zone);
+
+                var highRiskImage = URL.createObjectURL(new Blob([highRiskBytes], { type: 'image/tiff' }));
+                var mediumRiskImage = URL.createObjectURL(new Blob([mediumRiskBytes], { type: 'image/tiff' }));
+                var lowRiskImage = URL.createObjectURL(new Blob([lowRiskBytes], { type: 'image/tiff' }));
+
+                map.on('load', function() {
+                    map.addLayer({
+                        'id': 'high-risk-zone',
+                        'type': 'raster',
+                        'source': {
+                            'type': 'image',
+                            'url': highRiskImage,
+                            'coordinates': [[-180, 90], [180, 90], [180, -90], [-180, -90]]
+                        },
+                        'paint': {}
+                    });
+
+                    map.addLayer({
+                        'id': 'medium-risk-zone',
+                        'type': 'raster',
+                        'source': {
+                            'type': 'image',
+                            'url': mediumRiskImage,
+                            'coordinates': [[-180, 90], [180, 90], [180, -90], [-180, -90]]
+                        },
+                        'paint': {}
+                    });
+
+                    map.addLayer({
+                        'id': 'low-risk-zone',
+                        'type': 'raster',
+                        'source': {
+                            'type': 'image',
+                            'url': lowRiskImage,
+                            'coordinates': [[-180, 90], [180, 90], [180, -90], [-180, -90]]
+                        },
+                        'paint': {}
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    </script>
+</body>
+</html> -->
+
+
+
+
+
+<!-- <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flood Zones Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css">
+    <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
+</head>
+<body>
+    <div id="map" style="height: 600px;"></div>
+
+    <script>
+        function base64ToImage(base64) {
+            var img = new Image();
+            img.src = 'data:image/tiff;base64,' + base64;
+            return img;
+            console.error('image cannot be rendered');
+        }
+
+        // Initialize MapLibre map with error handling
+        var map = new maplibregl.Map({
+            container: 'map',
+            style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',  // Updated style URL
+            center: [0, 0],  // Initial center of the map
+            zoom: 1  // Initial zoom level
+        });
+
+        map.on('error', function(e) {
+            console.error('MapLibre GL error:', e);
+        });
+
+        // Fetch GeoTIFF analysis data
+        fetch(`/analyze/{{ floodextent_id }}/`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    console.error('Error:', data.error);
+                    return;
+                }
+
+                var highRiskImage = base64ToImage(data.high_risk_zone);
+                var mediumRiskImage = base64ToImage(data.medium_risk_zone);
+                var lowRiskImage = base64ToImage(data.low_risk_zone);
+
+                // Append images to the map div
+                document.getElementById('map').appendChild(highRiskImage);
+                document.getElementById('map').appendChild(mediumRiskImage);
+                document.getElementById('map').appendChild(lowRiskImage);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    </script>
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flood Zones Map</title>
+    <style>
+        #map {
+            height: 600px;
+            width: 100%; /* Adjust width as needed */
+        }
+        .risk-zone {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script>
+        function base64ToImage(base64) {
+            var img = new Image();
+            img.className = 'risk-zone';
+            img.src = 'data:image/tiff;base64,' + base64;
+            return img;
+        }
+
+        fetch('/analyze/1/') // Adjust URL as per your endpoint
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error:', data.error);
+                    return;
+                }
+
+                var highRiskImage = base64ToImage(data.high_risk_zone);
+                var mediumRiskImage = base64ToImage(data.medium_risk_zone);
+                var lowRiskImage = base64ToImage(data.low_risk_zone);
+
+                // Append images to the map container
+                document.getElementById('map').appendChild(highRiskImage);
+                document.getElementById('map').appendChild(mediumRiskImage);
+                document.getElementById('map').appendChild(lowRiskImage);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    </script>
+</body>
 </html>
+
+
+
+

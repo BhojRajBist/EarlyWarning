@@ -70,6 +70,7 @@ CORS_ALLOWED_ORIGINS = [
 ROOT_URLCONF = 'few.urls'
 
 import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 TEMPLATES = [
     {
