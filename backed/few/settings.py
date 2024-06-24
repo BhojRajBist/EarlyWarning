@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     # 'tif',#this is app to view the tif file from backend 
     # 'boundary', # This app is for storing the nepal boundary
     'geojson_app',
-    'floodzones',
+    # 'floodzones',
+    'flood_risk_app',
 ]
 
 MIDDLEWARE = [
