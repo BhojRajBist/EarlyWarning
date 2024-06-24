@@ -6,6 +6,7 @@ from . import views
 urlpatterns = [
     path('upload/', views.upload_raster, name='upload_raster'),
     path('raster/<int:pk>/', views.view_raster, name='view_raster'),
+    path('api/flood-zones/', views.get_flood_zones_geojson, name='get_flood_zones_geojson'),
 ]
 
 if settings.DEBUG:
