@@ -64,7 +64,6 @@
 #views for rest api
 
 
-
 import os
 import json
 from django.shortcuts import render, redirect
@@ -80,13 +79,15 @@ def upload_raster(request):
         path = default_storage.save('rasters/' + raster_file.name, raster_file)
         full_path = default_storage.path(path)
 
-        geometries, profile = classify_and_vectorize_raster(full_path)
+        geometries, profile, min_value, max_value = classify_and_vectorize_raster(full_path)
         vector_file_path = save_vector_data(geometries, profile)
 
         zone = FloodRiskZone.objects.create(
             name='Classified Zones GeoJSON', 
             raster=path, 
-            classified_raster=vector_file_path
+            classified_raster=vector_file_path,
+            min_value=min_value,
+            max_value=max_value
         )
 
         return redirect('view_raster', pk=zone.pk)
@@ -113,7 +114,14 @@ def get_flood_zones_geojson(request):
             with open(geojson_file_path, 'r') as geojson_file:
                 geojson_data = json.load(geojson_file)
 
-            return JsonResponse(geojson_data)
+            # Include the min and max values in the response
+            response_data = {
+                'geojson_data': geojson_data,
+                'min_value': raster.min_value,
+                'max_value': raster.max_value
+            }
+
+            return JsonResponse(response_data)
 
         except FloodRiskZone.DoesNotExist:
             return JsonResponse({'error': 'No classified raster found.'}, status=404)
@@ -121,4 +129,5 @@ def get_flood_zones_geojson(request):
             return JsonResponse({'error': 'GeoJSON file not found.'}, status=404)
 
     return JsonResponse({'error': 'Method not allowed.'}, status=405)
+
 
