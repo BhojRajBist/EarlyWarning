@@ -66,7 +66,6 @@
 
 <!-- This is frontend  with collepallet as per the GEE code -->
 
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -90,6 +89,10 @@
 <body>
     <div id="map" style="height: 600px;"></div>
     <div id="legend" class="legend"></div> <!-- Container for legend -->
+    <div>
+        <strong>Min Value:</strong> <span id="min-value">{{ min_value }}</span><br>
+        <strong>Max Value:</strong> <span id="max-value">{{ max_value }}</span>
+    </div>
 
     <script>
         var map = L.map('map').setView([28, 84], 7); // Center map on Nepal
@@ -118,7 +121,7 @@
                             weight: 1,
                             opacity: 1,
                             color: 'white',
-                            fillOpacity: 0.7
+                            fillOpacity: 0.5
                         };
                     }
                 }).addTo(map);
@@ -143,20 +146,19 @@
         // Function to get color based on classification
         function getColor(classification) {
             switch (classification) {
-                case 'low':
+                case 'no_flood':
+                    return '#808080'; // Gray
+                case 'shallow':
                     return '#0000FF'; // Blue
-                case 'medium':
+                case 'moderate':
                     return '#FFA500'; // Orange
-                case 'high':
+                case 'deep':
                     return '#FF0000'; // Red
-                case 'very high':
-                    return '#FF007F'; // Pink
                 default:
-                    return '#808080'; // Gray (fallback)
+                    return '#FF007F'; // Pink (fallback)
             }
         }
     </script>
 </body>
 </html>
-
 
